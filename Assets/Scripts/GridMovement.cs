@@ -7,26 +7,33 @@ using System.Collections;
 public class GridMovement : MonoBehaviour {
 
     public float speed = 5.0f;
-    Vector3 pos;
-    Vector3 old;
+    public float jumpHeight = 1f;
+    Vector3 targetPos;
+    Vector3 targetRot;
     Transform tr;
 
     float inputX, inputY;
     Vector3 xMovement, zMovement;
+    float rotationAmount = 90;
     
     float gridDivision = 1f;
 
     bool isMoving = false;
-    public AnimationCurve animCurve, otherCurve;
+    public AnimationCurve jumpCurve, subtractorCurve;
+    public AnimationCurve moveCurve;
     private float startTime;
+
+    public GameObject camera;
 
     void Start()
     {
-        pos = transform.position;
+        targetPos = transform.position;
+        targetRot = transform.rotation.eulerAngles;
         tr = transform;
 
         xMovement = Vector3.right / gridDivision;
         zMovement = new Vector3(0, 0, 1) / gridDivision;
+
     }
 
     private void Update()
@@ -38,51 +45,71 @@ public class GridMovement : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if ((inputY == 1) && (tr.position == pos))
+        if (isMoving)
+            return;
+
+        float xRot = 0; 
+        float zRot = 0;
+
+        if ((inputY == 1) && (tr.position == targetPos))
         {
-            pos += zMovement;
+            targetPos += zMovement;
+            xRot = rotationAmount;
         }
-        else if ((inputX == 1) && (tr.position == pos))
+        else if ((inputX == 1) && (tr.position == targetPos))
         {
-            pos += xMovement;
+            targetPos += xMovement;
+            zRot = -rotationAmount;
         }
-        else if ((inputY == -1) && (tr.position == pos))
+        else if ((inputY == -1) && (tr.position == targetPos))
         {
-            pos -= zMovement;
+            targetPos -= zMovement;
+            xRot = -rotationAmount;
         }
-        else if ((inputX == -1) && (tr.position == pos))
+        else if ((inputX == -1) && (tr.position == targetPos))
         {
-            pos -= xMovement;
+            targetPos -= xMovement;
+            zRot = rotationAmount;
         }
 
-        if(pos != transform.position && !isMoving)
-            MoveTo(pos, speed);
+        Quaternion targetQ = Quaternion.Euler((tr.rotation.eulerAngles.x + xRot)%360, 0, (transform.rotation.eulerAngles.y + zRot)%360);
+
+        if (targetPos != transform.position && !isMoving)
+            MoveTo(targetPos,targetQ, speed);
     }
 
-    void MoveTo(Vector3 target, float duration)
+    void MoveTo(Vector3 targetPos,Quaternion targetRot, float duration)
     {
-        StartCoroutine(AnimatePosition(transform.position, target, duration));
+        StartCoroutine(AnimatePosition(tr.position, targetPos,tr.rotation,targetRot, duration));
     }
 
-    IEnumerator AnimatePosition(Vector3 origin, Vector3 target, float duration)
+    IEnumerator AnimatePosition(Vector3 originalPos, Vector3 targetPos, Quaternion originalRot, Quaternion targetRot, float duration)
     {
         isMoving = true;
         float journey = 0f;
+   
         while (journey <= duration)
         {
+            //Calculate percentage of the animation that has been completed
             journey = journey + Time.deltaTime;
-
             float percent = (Mathf.Clamp01(journey / duration));
-            float curvePercent = animCurve.Evaluate(percent);
-            float otherPercent = otherCurve.Evaluate(percent);
 
-            //transform.position = Vector3.LerpUnclamped(origin, target, curvePercent);
-            transform.position = new Vector3(Mathf.Lerp(origin.x, target.x, percent),
-                                             origin.y + (curvePercent - otherPercent),
-                                             Mathf.Lerp(origin.z, target.z, percent));
+            //Evaluate Animation Curves
+            float jumpCurveValue = jumpCurve.Evaluate(percent);
+            float subtractorCurveValue = subtractorCurve.Evaluate(percent);
+            float moveCurveValue = moveCurve.Evaluate(percent);
+
+            //Interpolate Position Based on Curve Values
+            transform.position = new Vector3(Mathf.LerpUnclamped(originalPos.x, targetPos.x, moveCurveValue),
+                                             originalPos.y + jumpHeight * (jumpCurveValue-subtractorCurveValue),
+                                             Mathf.LerpUnclamped(originalPos.z, targetPos.z, moveCurveValue));
+
+            //Interpolate Rotation
+            transform.rotation = Quaternion.Lerp(originalRot, targetRot, percent);
 
             yield return null;
         }
+        camera.GetComponent<CameraShake>().StartShaking();
         isMoving = false;
     }
 }

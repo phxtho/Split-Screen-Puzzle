@@ -7153,22 +7153,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.004169464
-      value: -0.0081833005
-      inSlope: 0.166693
-      outSlope: 0.166693
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.50198865
-      value: 0.9966719
-      inSlope: -0.019744039
-      outSlope: -0.019744039
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.9916687
-      value: 0.006248474
+      time: 0
+      value: 1.0062561
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.99998564
+      value: 0.006248474
+      inSlope: -1.5001671
+      outSlope: -1.5001671
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -8393,7 +8387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.4
-  jumpHeight: 0.16
+  jumpHeight: 0.25
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -8436,8 +8430,8 @@ MonoBehaviour:
     - serializedVersion: 2
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1

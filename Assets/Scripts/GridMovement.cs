@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using MEC;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
@@ -78,10 +79,10 @@ public class GridMovement : MonoBehaviour {
 
     void MoveTo(Vector3 targetPos,Quaternion targetRot, float duration)
     {
-        StartCoroutine(AnimatePosition(tr.position, targetPos,tr.rotation,targetRot, duration));
+        Timing.RunCoroutine(_AnimatePosition(tr.position, targetPos,tr.rotation,targetRot, duration));
     }
 
-    IEnumerator AnimatePosition(Vector3 originalPos, Vector3 targetPos, Quaternion originalRot, Quaternion targetRot, float duration)
+    IEnumerator<float> _AnimatePosition(Vector3 originalPos, Vector3 targetPos, Quaternion originalRot, Quaternion targetRot, float duration)
     {
         isMoving = true;
         float journey = 0f;
@@ -105,9 +106,11 @@ public class GridMovement : MonoBehaviour {
             //Interpolate Rotation
             transform.rotation = Quaternion.Lerp(originalRot, originalRot * targetRot, percent);
 
-            yield return null;
+            yield return Timing.WaitForOneFrame;
         }
-        camera.GetComponent<CameraShake>().StartShaking();
+        //Activate Screen Shake
+       camera.GetComponent<CameraShake>().StartShaking();
+
         isMoving = false;
     }
 }

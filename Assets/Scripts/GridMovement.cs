@@ -28,7 +28,6 @@ public class GridMovement : MonoBehaviour {
     void Start()
     {
         targetPos = transform.position;
-        targetRot = transform.rotation.eulerAngles;
         tr = transform;
 
         xMovement = Vector3.right / gridDivision;
@@ -48,34 +47,33 @@ public class GridMovement : MonoBehaviour {
         if (isMoving)
             return;
 
-        float xRot = 0; 
-        float zRot = 0;
+        Quaternion rotation = Quaternion.identity;
 
         if ((inputY == 1) && (tr.position == targetPos))
         {
             targetPos += zMovement;
-            xRot = rotationAmount;
+            rotation = Quaternion.AngleAxis(rotationAmount, Vector3.forward);
+           
         }
         else if ((inputX == 1) && (tr.position == targetPos))
         {
             targetPos += xMovement;
-            zRot = -rotationAmount;
+            rotation = Quaternion.AngleAxis(rotationAmount, Vector3.right);
         }
         else if ((inputY == -1) && (tr.position == targetPos))
         {
             targetPos -= zMovement;
-            xRot = -rotationAmount;
+            rotation = Quaternion.AngleAxis(rotationAmount, Vector3.back);
+            
         }
         else if ((inputX == -1) && (tr.position == targetPos))
         {
             targetPos -= xMovement;
-            zRot = rotationAmount;
+            rotation = Quaternion.AngleAxis(rotationAmount, Vector3.left);
         }
 
-        Quaternion targetQ = Quaternion.Euler((tr.rotation.eulerAngles.x + xRot)%360, 0, (transform.rotation.eulerAngles.y + zRot)%360);
-
         if (targetPos != transform.position && !isMoving)
-            MoveTo(targetPos,targetQ, speed);
+            MoveTo(targetPos,rotation, speed);
     }
 
     void MoveTo(Vector3 targetPos,Quaternion targetRot, float duration)
@@ -105,7 +103,7 @@ public class GridMovement : MonoBehaviour {
                                              Mathf.LerpUnclamped(originalPos.z, targetPos.z, moveCurveValue));
 
             //Interpolate Rotation
-            transform.rotation = Quaternion.Lerp(originalRot, targetRot, percent);
+            transform.rotation = Quaternion.Lerp(originalRot, originalRot * targetRot, percent);
 
             yield return null;
         }

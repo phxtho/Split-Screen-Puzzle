@@ -2797,6 +2797,7 @@ MonoBehaviour:
   distance: 5
   angle: 60
   smoothSpeed: 0.325
+  lookSmoothRate: 0.025
   offset: {x: 0, y: 0, z: 0}
 --- !u!1001 &726895891
 Prefab:
@@ -8392,7 +8393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.4
-  jumpHeight: 0.5
+  jumpHeight: 0.16
   jumpCurve:
     serializedVersion: 2
     m_Curve:

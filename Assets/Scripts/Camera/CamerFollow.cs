@@ -9,6 +9,7 @@ public class CamerFollow : MonoBehaviour {
     public float distance;
     public float angle;
     public float smoothSpeed = 0.325f;
+    public float lookSmoothRate = 0.05f;
     public Vector3 offset;
 
     Vector3 velocity = Vector3.zero;
@@ -24,6 +25,7 @@ public class CamerFollow : MonoBehaviour {
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothSpeed);
         transform.position = smoothedPosition;
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.LookRotation(target.position - transform.position),lookSmoothRate);
         //transform.LookAt(target);
     }
 

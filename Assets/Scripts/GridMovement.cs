@@ -26,6 +26,12 @@ public class GridMovement : MonoBehaviour {
 
     public GameObject camera;
 
+    Vector3 rayOrigin;
+    Vector3 rayDirection;
+    float rayLength = 1f;
+
+    public GameObject pS;
+
     void Start()
     {
         targetPos = transform.position;
@@ -41,6 +47,11 @@ public class GridMovement : MonoBehaviour {
         //Movement Input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     void FixedUpdate()
@@ -49,6 +60,7 @@ public class GridMovement : MonoBehaviour {
             return;
 
         Quaternion rotation = Quaternion.identity;
+        targetPos = transform.position;
 
         if ((inputY == 1) && (tr.position == targetPos))
         {
@@ -72,9 +84,18 @@ public class GridMovement : MonoBehaviour {
             targetPos -= xMovement;
             rotation = Quaternion.AngleAxis(rotationAmount, Vector3.left);
         }
+                
+        rayOrigin = transform.position;
+        rayDirection = (targetPos - rayOrigin).normalized;
 
-        if (targetPos != transform.position && !isMoving)
+        RaycastHit hit;
+        //!Physics.Raycast(rayOrigin, rayDirection, out hit, rayLength) && 
+
+        if (!Physics.Raycast(rayOrigin, rayDirection, out hit, rayLength) && targetPos != transform.position && !isMoving)
             MoveTo(targetPos,rotation, speed);
+       
+
+
     }
 
     void MoveTo(Vector3 targetPos,Quaternion targetRot, float duration)
@@ -104,13 +125,26 @@ public class GridMovement : MonoBehaviour {
                                              Mathf.LerpUnclamped(originalPos.z, targetPos.z, moveCurveValue));
 
             //Interpolate Rotation
-            transform.rotation = Quaternion.Lerp(originalRot, originalRot * targetRot, percent);
+            transform.rotation = Quaternion.Slerp(originalRot, originalRot * targetRot, percent);
 
             yield return Timing.WaitForOneFrame;
         }
         //Activate Screen Shake
-       camera.GetComponent<CameraShake>().StartShaking();
+        camera.GetComponent<CameraShake>().StartShaking();
+        Instantiate(pS, transform.position - Vector3.up * 0.25f, Quaternion.identity);
 
         isMoving = false;
+    }
+
+    bool Grounded()
+    {
+        if(Physics.Raycast(transform.position, Vector3.down))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

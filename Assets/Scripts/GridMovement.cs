@@ -24,7 +24,7 @@ public class GridMovement : MonoBehaviour {
     public AnimationCurve moveCurve;
     private float startTime;
 
-    
+    public LayerMask collisionMask;
     Vector3 rayOrigin;
     Vector3 rayDirection;
     float rayLength = 1f;

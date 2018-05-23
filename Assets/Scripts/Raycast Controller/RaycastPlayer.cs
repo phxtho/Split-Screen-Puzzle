@@ -10,7 +10,7 @@ public class RaycastPlayer : MonoBehaviour
 
     float inputX, inputY;
     Vector3 xMovement, zMovement;
-    float rotationAmount = 90;
+    float rotationAmount = -180;
 
     float gridDivision = 1f;
 

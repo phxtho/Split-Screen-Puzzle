@@ -59,6 +59,16 @@ public class RaycastController : MonoBehaviour {
         collider = GetComponent<BoxCollider>();
     }
 
+    private void Update()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 3, collisionMask))
+        {
+            if(hit.transform.tag == "Wall")
+                hit.transform.gameObject.GetComponent<FloorTile>().LightUp();
+        }
+    }
+
     void UpdateRaycastOrigins()
     {
         Bounds bounds = collider.bounds;
@@ -199,11 +209,14 @@ public class RaycastController : MonoBehaviour {
 
     public void MoveTo(Vector3 targetPos, Quaternion targetRot)
     {
-        UpdateRaycastOrigins();
-
-        if (HorizontalCollisions(targetPos) && targetPos != transform.position && !isMoving)
+        if (Physics.Raycast(transform.position, Vector3.down, 1f, collisionMask))
         {
-            Timing.RunCoroutine(_AnimatePosition(transform.position, targetPos, transform.rotation, targetRot, moveDuration));
+            UpdateRaycastOrigins();
+
+            if (HorizontalCollisions(targetPos) && targetPos != transform.position && !isMoving)
+            {
+                Timing.RunCoroutine(_AnimatePosition(transform.position, targetPos, transform.rotation, targetRot, moveDuration));
+            }
         }
     }
 
@@ -229,15 +242,20 @@ public class RaycastController : MonoBehaviour {
                                              Mathf.LerpUnclamped(originalPos.z, targetPos.z, moveCurveValue));
 
             //Interpolate Rotation
-            transform.rotation = Quaternion.Slerp(originalRot, originalRot * targetRot, percent);
+            transform.rotation = Quaternion.SlerpUnclamped(originalRot, originalRot * targetRot, percent);
 
             yield return Timing.WaitForOneFrame;
         }
-        //Activate Screen Shake
-        cam.GetComponent<CameraShake>().StartShaking();
-        Instantiate(landingParticle, transform.position - Vector3.up * 0.25f, Quaternion.identity);
 
         transform.rotation = Quaternion.identity;
+
+        if (Physics.Raycast(transform.position, Vector3.down, 1f, collisionMask))
+        {
+            cam.GetComponent<CameraShake>().StartShaking();
+            Instantiate(landingParticle, transform.position - Vector3.up * 0.25f, Quaternion.identity);
+        }
+
         isMoving = false;
+
     }
 }

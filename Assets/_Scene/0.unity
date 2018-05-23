@@ -3851,8 +3851,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   camera: {fileID: 1605203198}
-  pS: {fileID: 1942728781254544, guid: 34649a78544a5dd4bb8fedd79d232ab0, type: 2}
+  pS: {fileID: 1788762823390392, guid: 8be4a83065949524c93fd2ae01bd74b3, type: 2}
 --- !u!54 &404543329
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11117,6 +11120,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   camera: {fileID: 0}
   pS: {fileID: 0}
 --- !u!65 &1242106511
@@ -18583,8 +18589,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   camera: {fileID: 1726075259}
-  pS: {fileID: 1942728781254544, guid: 34649a78544a5dd4bb8fedd79d232ab0, type: 2}
+  pS: {fileID: 1788762823390392, guid: 8be4a83065949524c93fd2ae01bd74b3, type: 2}
 --- !u!54 &2048831432
 Rigidbody:
   m_ObjectHideFlags: 0

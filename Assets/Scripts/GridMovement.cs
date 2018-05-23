@@ -24,18 +24,23 @@ public class GridMovement : MonoBehaviour {
     public AnimationCurve moveCurve;
     private float startTime;
 
-    public GameObject camera;
-
+    
     Vector3 rayOrigin;
     Vector3 rayDirection;
     float rayLength = 1f;
 
+    BoxCollider col;
+
+    //VFX
+    public GameObject camera;
     public GameObject pS;
 
     void Start()
     {
         targetPos = transform.position;
         tr = transform;
+
+        col = GetComponent<BoxCollider>();
 
         xMovement = Vector3.right / gridDivision;
         zMovement = new Vector3(0, 0, 1) / gridDivision;
@@ -138,7 +143,8 @@ public class GridMovement : MonoBehaviour {
 
     bool Grounded()
     {
-        if(Physics.Raycast(transform.position, Vector3.down))
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, rayLength))
         {
             return true;
         }

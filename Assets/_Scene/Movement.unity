@@ -7129,6 +7129,8 @@ MonoBehaviour:
   colourMappings:
   - colour: {r: 0, g: 0, b: 0, a: 1}
     prefab: {fileID: 1888276262414416, guid: 33b8c59b284338d4c9579468cb716c8a, type: 2}
+  - colour: {r: 0, g: 1, b: 0, a: 1}
+    prefab: {fileID: 1888276262414416, guid: 33b8c59b284338d4c9579468cb716c8a, type: 2}
 --- !u!4 &1450322158
 Transform:
   m_ObjectHideFlags: 0

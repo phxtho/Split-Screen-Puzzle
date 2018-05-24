@@ -39,11 +39,7 @@ public class RaycastPlayer : MonoBehaviour
         //Movement Input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
-    }
 
-
-    void FixedUpdate()
-    {
         Quaternion rotation = Quaternion.identity;
         targetPos = base.transform.position;
 
@@ -70,6 +66,6 @@ public class RaycastPlayer : MonoBehaviour
             rotation = Quaternion.AngleAxis(rotationAmount, Vector3.forward);
         }
 
-        rayController.MoveTo(targetPos, rotation);//MoveTo(targetPos, rotation);
+        rayController.MoveTo(targetPos, rotation);
     }
 }

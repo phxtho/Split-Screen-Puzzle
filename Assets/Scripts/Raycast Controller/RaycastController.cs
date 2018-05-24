@@ -21,7 +21,7 @@ public class RaycastController : MonoBehaviour {
     //RAYS
     public LayerMask collisionMask;
 
-    //Array of vectors storing the vertices of these faces
+    //Array storing the position of the verts of the objects collider
     Vector3[,,] cubeVerts = new Vector3[2,2,2];
 
     const float skinWidth = 0.015f;
@@ -242,7 +242,7 @@ public class RaycastController : MonoBehaviour {
                                              Mathf.LerpUnclamped(originalPos.z, targetPos.z, moveCurveValue));
 
             //Interpolate Rotation
-            transform.rotation = Quaternion.SlerpUnclamped(originalRot, originalRot * targetRot, percent);
+            transform.rotation = Quaternion.Slerp(originalRot, originalRot * targetRot, moveCurveValue);
 
             yield return Timing.WaitForOneFrame;
         }

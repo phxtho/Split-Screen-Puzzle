@@ -16,7 +16,7 @@ public class RaycastController : MonoBehaviour {
 
     public bool isMoving = false;
 
-    public float distanceToGround;
+    public float tileOnTime = 2f;
 
     //RAYS
     public LayerMask collisionMask;
@@ -52,11 +52,13 @@ public class RaycastController : MonoBehaviour {
     }
 
     //VFX
+    Material lightMaterial;
     public GameObject cam;
     public GameObject landingParticle;
 
     void Start () {
         collider = GetComponent<BoxCollider>();
+        lightMaterial = GetComponent<MeshRenderer>().material;
     }
 
     private void Update()
@@ -65,7 +67,7 @@ public class RaycastController : MonoBehaviour {
         if (Physics.Raycast(transform.position, Vector3.down, out hit, 3, collisionMask))
         {
             if(hit.transform.tag == "Wall")
-                hit.transform.gameObject.GetComponent<FloorTile>().LightUp();
+                hit.transform.gameObject.GetComponent<FloorTile>().LightUp(tileOnTime,lightMaterial);
         }
     }
 
@@ -113,7 +115,6 @@ public class RaycastController : MonoBehaviour {
                 {
                     velocity.y = (hit.distance - skinWidth) * directionY;
                     rayLength = hit.distance;
-                    distanceToGround = rayLength - skinWidth;
 
                     collisions.top = directionY == 1;
                     collisions.bottom = directionY == -1;

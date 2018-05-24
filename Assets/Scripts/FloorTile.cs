@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class FloorTile : MonoBehaviour {
 
-    public float waitTime = 2f;
+    float onTime = 2f;
+    public bool isOn = false;
     public GameObject lightTile;
     public Material baseMaterial, emissiveMaterial;
     MeshRenderer meshRenderer;
@@ -15,14 +16,17 @@ public class FloorTile : MonoBehaviour {
         meshRenderer.material = baseMaterial;
     }
 
-    public void LightUp()
+    public virtual void LightUp(float onTime, Material material)
     {
-        meshRenderer.material = emissiveMaterial;
-        Invoke("TurnOff", waitTime);
+        meshRenderer.material = material;
+        isOn = true;
+        this.onTime = onTime;
+        Invoke("TurnOff", this.onTime);
     }
 
-    void TurnOff()
+    public virtual void TurnOff()
     {
         meshRenderer.material = baseMaterial;
+        isOn = false;
     }
 }

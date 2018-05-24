@@ -7,7 +7,7 @@ public class FloorTile : MonoBehaviour {
     float onTime = 2f;
     public bool isOn = false;
     public GameObject lightTile;
-    public Material baseMaterial, emissiveMaterial;
+    public Material baseMaterial;
     MeshRenderer meshRenderer;
 
     private void Start()

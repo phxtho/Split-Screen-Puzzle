@@ -7,16 +7,15 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
 
-    public GameObject playerLeft;
-    public GameObject playerRight;
-
-    public GameObject canvas;
-
-    public float restartDelay = 1f;
-    int level;
-    bool sceneLoaded = true;
-
     public TimeManager timeManager;
+
+    [HideInInspector]
+    Vector3 playerStartPosition = new Vector3(1,5,1);
+
+    GameObject player;
+
+    [SerializeField]
+    int currentLevel;
 
     public struct TimeManager
     {
@@ -33,9 +32,21 @@ public class GameManager : MonoBehaviour {
             DontDestroyOnLoad(this.gameObject);
         }
         else
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); 
+    }
 
+    private void Start()
+    {
         timeManager.myTimeScale = 1;
+        player = FindObjectOfType<RaycastPlayer>().gameObject;
+
+        if (playerStartPosition == null)
+        {
+            Debug.Log("No start tile in the level");
+            return;
+        }
+
+        player.transform.position = playerStartPosition;
     }
 
     private void Update()
@@ -45,15 +56,6 @@ public class GameManager : MonoBehaviour {
         //Closing the Game
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
-
-        if (Input.GetKeyDown(KeyCode.R))
-            Restart();
-
-        if (BothPlayersOnGoal() && sceneLoaded)
-        {
-            sceneLoaded = false;
-            Invoke("NextLevel", restartDelay);
-        }
     }
 
     private void FixedUpdate()
@@ -61,39 +63,14 @@ public class GameManager : MonoBehaviour {
         timeManager.myFixedDelta = Time.fixedDeltaTime * timeManager.myTimeScale;
     }
 
-    bool BothPlayersOnGoal()
+    public void LevelComplete()
     {
-        if ((playerLeft.GetComponent<PlayerController>().onGoal) && (playerRight.GetComponent<PlayerController>().onGoal))
-            return true;
-
-        else
-            return false;
+        currentLevel++;
     }
 
-    #region Scene Switching
-    public void Restart()
+    public void ResetPlayer()
     {
-        level = 0;
-        SceneManager.LoadScene(level);
+        playerStartPosition = FindObjectOfType<StartTile>().transform.position;
+        player.transform.position = playerStartPosition;
     }
-
-    void NextLevel()
-    {
-        if (!sceneLoaded)
-        {
-            level++;
-
-            if (level < SceneManager.sceneCountInBuildSettings)
-            {
-                SceneManager.LoadScene(level);
-                sceneLoaded = true;
-            }
-            else
-            {
-               GameObject canvasInstance = Instantiate(canvas, Vector3.zero, Quaternion.identity);
-               canvasInstance.SetActive(true);
-            }
-        }
-    }
-    #endregion
 }

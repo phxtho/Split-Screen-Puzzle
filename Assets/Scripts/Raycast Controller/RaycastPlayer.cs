@@ -28,6 +28,10 @@ public class RaycastPlayer : MonoBehaviour
 
     private void Update()
     {
+        //Check fall off
+        if (transform.position.y < -10)
+            GameManager.instance.ResetPlayer();
+
         //Gravity Tings
         if (rayController.collisions.top || rayController.collisions.bottom)
         {

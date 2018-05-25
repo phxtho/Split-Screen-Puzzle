@@ -259,4 +259,11 @@ public class RaycastController : MonoBehaviour {
         isMoving = false;
 
     }
+
+    void SnapToGrid()
+    {
+        Vector3 currentPos = transform.position;
+        Vector3 targetPos = new Vector3(Mathf.Round(currentPos.x), currentPos.y, Mathf.Round(currentPos.z));
+        transform.position = targetPos;
+    }
 }

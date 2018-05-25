@@ -6,6 +6,7 @@ public class FloorTile : MonoBehaviour {
 
     float onTime = 2f;
     public bool isOn = false;
+    public bool permanentltyOn;
     public GameObject lightTile;
     public Material baseMaterial;
     MeshRenderer meshRenderer;
@@ -18,6 +19,9 @@ public class FloorTile : MonoBehaviour {
 
     public virtual void LightUp(float onTime, Material material)
     {
+        if (meshRenderer == null)
+            return;
+
         meshRenderer.material = material;
         isOn = true;
         this.onTime = onTime;
@@ -27,6 +31,10 @@ public class FloorTile : MonoBehaviour {
     public virtual void TurnOff()
     {
         meshRenderer.material = baseMaterial;
+
+        if (permanentltyOn)
+            return;
+
         isOn = false;
     }
 }

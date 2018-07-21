@@ -18,10 +18,13 @@ public class RaycastPlayer : MonoBehaviour
     Vector3 velocity;
 
     RaycastController rayController;
+    PowerManagement powerManager;
 
     private void Start()
     {
         rayController = GetComponent<RaycastController>();
+        powerManager = GetComponent<PowerManagement>();
+
         xMovement = Vector3.right / gridDivision;
         zMovement = Vector3.forward / gridDivision;
     }
@@ -31,6 +34,12 @@ public class RaycastPlayer : MonoBehaviour
         //Check fall off
         if (transform.position.y < -10)
             GameManager.instance.ResetPlayer();
+
+        //Activate PowerUp
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            powerManager.ActivatePowerUp();
+        }
 
         //Gravity Tings
         if (rayController.collisions.top || rayController.collisions.bottom)

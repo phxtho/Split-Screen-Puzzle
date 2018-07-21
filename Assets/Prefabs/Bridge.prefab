@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd98bb8e354c4d942876faf220c51e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourceIndicatorPrefab: {fileID: 1845405064046976, guid: 885837ceb849a1846ba27c3aa1b94beb,
+    type: 2}
   switchable: 1
   bridgePath:
   - {fileID: 4471212160780674}

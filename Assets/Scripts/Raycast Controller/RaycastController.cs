@@ -63,12 +63,15 @@ public class RaycastController : MonoBehaviour {
 
     private void Update()
     {
-        RaycastHit hit;
+      /* RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, 3, collisionMask))
         {
-            if(hit.transform.tag == "Wall")
-                hit.transform.gameObject.GetComponent<FloorTile>().LightUp(tileOnTime,lightMaterial);
-        }
+            if (hit.transform.tag == "Tile")
+            {
+                hit.transform.gameObject.GetComponent<FloorTile>().LightUp(tileOnTime, lightMaterial);
+            }
+        }*/
+        
     }
 
     void UpdateRaycastOrigins()
@@ -256,7 +259,21 @@ public class RaycastController : MonoBehaviour {
             Instantiate(landingParticle, transform.position - Vector3.up * 0.25f, Quaternion.identity);
         }
 
+
+        //Light Up the tile you land on
+       RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 3, collisionMask))
+        {
+            FloorTile ft = hit.transform.gameObject.GetComponent<FloorTile>();
+            if(ft != null)
+                ft.LightUp(tileOnTime, lightMaterial);
+        }
+
+        
+
         isMoving = false;
+
+
 
     }
 

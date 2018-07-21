@@ -9,31 +9,61 @@ public class FloorTile : MonoBehaviour {
     public bool permanentltyOn;
     public GameObject lightTile;
     public Material baseMaterial;
-    MeshRenderer meshRenderer;
+    Material  emissiveMaterial;
+    MeshRenderer lightMeshRenderer;
 
     private void Start()
     {
-        meshRenderer = lightTile.GetComponent<MeshRenderer>();
-        meshRenderer.material = baseMaterial;
+        lightTile = transform.GetChild(0).gameObject;
+        lightMeshRenderer = lightTile.GetComponent<MeshRenderer>();
+        lightMeshRenderer.material = baseMaterial;
     }
 
     public virtual void LightUp(float onTime, Material material)
     {
-        if (meshRenderer == null)
-            return;
+        if (lightMeshRenderer == null)
+        {
+            lightTile = transform.GetChild(0).gameObject;
+            lightMeshRenderer = lightTile.GetComponent<MeshRenderer>();
+        }
 
-        meshRenderer.material = material;
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+
+            BridgeSource bridgeSource = child.GetComponent<BridgeSource>();
+            if (bridgeSource != null)
+                bridgeSource.Activate();
+
+        }
+
+        if(emissiveMaterial == null)
+            emissiveMaterial = GameObject.FindGameObjectWithTag("Player").GetComponent<MeshRenderer>().material;
+
+        lightMeshRenderer.material = material;
         isOn = true;
         this.onTime = onTime;
+
         Invoke("TurnOff", this.onTime);
     }
 
     public virtual void TurnOff()
     {
-        meshRenderer.material = baseMaterial;
+        Time.timeScale = 1f;
+        lightMeshRenderer.material = baseMaterial;
 
         if (permanentltyOn)
             return;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+
+            BridgeSource bridgeSource = child.GetComponent<BridgeSource>();
+            if (bridgeSource != null)
+                bridgeSource.DeActivate();
+
+        }
 
         isOn = false;
     }

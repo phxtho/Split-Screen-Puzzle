@@ -5,6 +5,9 @@ using MEC;
 
 public class Bridge : MonoBehaviour {
 
+    public GameObject sourceIndicatorPrefab;
+    List<BridgeSource> sourceIndicators = new List<BridgeSource>();
+
     bool activated = false;
     public bool switchable;
 
@@ -20,6 +23,34 @@ public class Bridge : MonoBehaviour {
 
     public AnimationCurve positionCurve;
     public float animDuration = 0.4f;
+
+    private void Start()
+    {
+        if (sourceIndicatorPrefab != null)
+        {
+            foreach (FloorTile powerSourceTile in powerSourceTiles)
+            {
+                //Create the source indicator
+                GameObject sourceIndicator = Instantiate(sourceIndicatorPrefab, powerSourceTile.transform.position + Vector3.up, Quaternion.identity);
+
+                //Set source indicators active material
+                Material sourceMaterial;
+
+                if (switchable)
+                    sourceMaterial = switchableEmissiveMaterial;
+                else
+                    sourceMaterial = permanentEmissiveMaterial;
+
+                BridgeSource sourceIndicatorScript = sourceIndicator.GetComponent<BridgeSource>();
+                sourceIndicatorScript.activeMaterial = sourceMaterial;
+
+                sourceIndicators.Add(sourceIndicatorScript);
+
+                //Parent indicator to the source tile
+                sourceIndicator.transform.SetParent(powerSourceTile.transform);
+            }
+        }
+    }
 
     private void Update()
     {
@@ -44,6 +75,11 @@ public class Bridge : MonoBehaviour {
                     return false;
             }
 
+            //This ensures that permanent bridges sources stay down;
+            foreach(BridgeSource sourceScript in sourceIndicators)
+            {
+               sourceScript.isSwitchable = switchable;
+            }
             return true;
         }
         else
@@ -96,7 +132,7 @@ public class Bridge : MonoBehaviour {
                 tileScript.baseMaterial = permanentEmissiveMaterial;
             }
 
-
+            //Animate
             float journey = 0f;
             float perTileDuration = animDuration/(bridgePath.Length-1);
 

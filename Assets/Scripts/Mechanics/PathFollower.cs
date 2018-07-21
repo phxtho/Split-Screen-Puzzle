@@ -17,7 +17,6 @@ public class PathFollower : MonoBehaviour {
         for (int i = 0; i < waypoints.Length; i++)
         {
             waypoints[i] = pathHolder.GetChild(i).position;
-            waypoints[i] = new Vector3(waypoints[i].x, transform.position.y + waypoints[i].y, waypoints[i].z);
         }
 
         StartCoroutine(FollowPath(waypoints));
@@ -28,13 +27,15 @@ public class PathFollower : MonoBehaviour {
         int targetWaypointIndex = 1;
         Vector3 targetWaypoint = waypoints[targetWaypointIndex];
         transform.LookAt(targetWaypoint);
-
+        int increment = 1;
         while (true)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * GameManager.instance.timeManager.myDelta);
             if (transform.position == targetWaypoint)
             {
-                targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
+                targetWaypointIndex += increment;
+                if (targetWaypointIndex >= waypoints.Length - 1 || targetWaypointIndex <= 0)
+                    increment *= -1;
                 targetWaypoint = waypoints[targetWaypointIndex];
                 yield return new WaitForSeconds(waitTime);
                 yield return StartCoroutine(TurnToFace(targetWaypoint));
@@ -71,7 +72,5 @@ public class PathFollower : MonoBehaviour {
             Gizmos.DrawLine(previousPosition, waypoint.position);
             previousPosition = waypoint.position;
         }
-
-        Gizmos.DrawLine(previousPosition, startPosition);
     }
 }

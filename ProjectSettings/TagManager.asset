@@ -6,8 +6,11 @@ TagManager:
   tags:
   - Undefined
   - Obstacle
-  - Wall
   - Goal
+  - Start
+  - Tile
+  - Wall
+  - Enemy
   layers:
   - Default
   - TransparentFX

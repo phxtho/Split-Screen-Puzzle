@@ -4,53 +4,47 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour {
 
-	public enum PowerUpType { shrink, grow}
+	public enum PowerUpType { shrink, armour}
     public PowerUpType powerUpType;
+    public GameObject activationPS;
     GameObject player;
+    PowerManagement playerPM;
 
-    private void OnTriggerEnter(Collider other)
+    private void Start()
     {
-        if(other.tag == "Player")
-        {
-            player = other.gameObject;
-            ActivatePowerUp();
-        }
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerPM = player.GetComponent<PowerManagement>();
     }
 
-    void ActivatePowerUp()
+    private void Update()
+    {
+        if (player == null)
+            return;
+
+        float distance = (player.transform.position - transform.position).magnitude;
+        if (distance <= 0.8f)
+            EnablePower();
+    }
+
+    void EnablePower()
     {
         //Spawn Particle Effect
+        Instantiate(activationPS, transform.position, Quaternion.identity);
 
         GetComponent<MeshRenderer>().enabled = false;
-        GetComponent<Collider>().enabled = false;
+       // GetComponent<Collider>().enabled = false;
 
         switch (powerUpType)
         {
             case PowerUpType.shrink:
-                Shrink();
+                playerPM.powerUpType = PowerManagement.PowerUpType.shrink;
                 break;
 
-            case PowerUpType.grow:
-                Grow();
+            case PowerUpType.armour:
+                playerPM.powerUpType = PowerManagement.PowerUpType.armour;
                 break;
         }
 
         Destroy(gameObject);
     }
-
-    #region Power Ups
-
-    void Shrink()
-    {
-        float multiplier = 0.5f;
-        player.transform.localScale *= multiplier;
-    }
-
-    void Grow()
-    {
-        float multiplier = 1.5f;
-        player.transform.localScale *= multiplier;
-    }
-
-    #endregion
 }
